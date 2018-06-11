@@ -1,0 +1,8 @@
+1. EC2에 git설치 (apt-get install git)
+2. EC2에 git clone
+ > clone https://github.com/wodud1012/nodeSample
+3. npm install 후 서버 동작
+
+4. 프로젝트 진행
+작업장 -> 커밋 -> 지역저장소 -> 푸쉬 -> 원격저장소 -> EC2 pull
+ > git pull
