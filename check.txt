@@ -1,0 +1,8 @@
+1. GitHub Repository만들기 :Remote Repository
+2. SourceTree 이용해서 Clone : Local Repository
+3. 로컬작업장에 파일 만들기 : File Change
+4. SourceTree의 파일상태에서 변경내용 확인
+
+5. 커밋하기 (메세지 작성)
+6. 푸쉬하기
+7. GitHub.com 에서 푸쉬한 파일 확인
