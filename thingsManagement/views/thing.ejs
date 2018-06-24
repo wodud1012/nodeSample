@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>things list</title>
+        <link rel="stylesheet" href="/css/ui.css">
+    </head>
+    <body>
+
+    <header>
+        <!--<div><a href="/main/">메인페이지</a></div>
+        <div><a href="/logout">logout</a></div>-->
+    </header>
+
+    <h1>OO창고 자재 관리</h1>
+
+    <section class="showWrap">
+        
+        <div style="height: auto; width: 100%; border:1px solid;">
+                    <li class="get_id">
+                        <input type="text" name="name">
+                        <button>자재상세정보</button>
+                        <section class="showResult"></section>
+                    </li>
+        </div>
+        <div style="height: auto; width: 100%; border:1px solid;">
+            <li class="delete_id">
+                <input type="text" name="no">
+                <button>자재삭제</button> *자재의 번호를 입력하여 주십시오.
+                <section class="showResult"></section>
+                
+            </li>
+        </div>
+
+            <!--div style="height: auto; width: 100%; border:1px solid;"-->
+            <div style="height: auto;">
+                <div style="height: 300px;float: left; width: 100%;border:1px solid;">
+                    <li class="post">
+                        <form action="" method="post">
+                        <div> 자재번호 : <input type="text" name="no" > </div>
+                        <div> 자재명 : <input type="text" name="name" > </div>
+                        <div> 제조사 : <input type="text" name="maker"> </div>
+                        <div> 수량 : <input type="text" name="size"> </div>
+                        <div> 날짜 : <input type="text" name="date"> </div>
+                        </form>
+                        <button>자재추가</button>
+                        <section class="showResult"></section>
+                    </li>
+                </div>
+                <!--<div style="height: 300px;float: left; width: 49.9%; border:1px solid;">
+                    <li class="update_id">
+                        <form action="" method="put">
+                            <div> 자재번호 : <input type="text" name="no" > </div>
+                            <div> 자재명 : <input type="text" name="name" > </div>
+                            <div> 제조사 : <input type="text" name="maker"> </div>
+                            <div> 수량 : <input type="text" name="size"> </div>
+                            <div> 날짜 : <input type="text" name="date"> </div>
+                        </form>
+                        <button>자재정보갱신</button>
+                        <section class="showResult"></section>
+                    </li>
+                </div>-->
+                
+            </div>
+            
+            <div style="height: auto; width: 100%; border:1px solid;">
+                <li class="get_all">
+                    <button>모든자재보기</button>
+                    <section class="showResult"></section>
+                </li>
+            </div>
+            
+    </section>
+
+
+    <script>
+        document.querySelector('.showWrap').addEventListener('click', function(e) {
+            let url, method, data, fn;
+            const target = e.target;
+            const li = target.closest('LI');
+            const showResult = li.querySelector(".showResult");
+            const type = li.className;
+
+            if(target.tagName !== "BUTTON") return;
+
+            switch (type) {
+                case "get_all":
+                    url = "/thing";
+                    method = "GET";
+                    fn = function(result) {
+                        if(result.result === 1) {
+                            let titles = result.data.reduce(function(pre,next){
+                                pre += "<li>" + next.name + "</li>"
+                                return pre;
+                            },"");
+                            showResult.innerHTML = "<ul>" + titles + "</ul>";
+                        } else { 
+                         showResult.innerHTML = "list not found";
+                        } 
+                    }
+                    break;
+                
+                case "post":
+                    url = "/thing";
+                    method = "POST";
+                    let inputs = [].slice.call(document.querySelector("form").elements);
+                    data = inputs.reduce(function(pre,next) {
+                        pre[next.name] = next.value;
+                        return pre;
+                    }, {});
+                    fn = function (result) {
+                        if(result.result === 1) showResult.innerHTML = "자재 추가 성공.";
+                        else showResult.innerHTML = "추가 실패";
+                    }
+                    break;
+                case "get_id":
+                    url = "/thing/"+li.getElementsByTagName("input")[0].value;
+                    method = "GET";
+                    fn = function(result) {
+                        if(result.result === 1) {
+                            showResult.innerHTML = "자재번호 : "+ result.data[0].no + "&nbsp||&nbsp" + 
+                            "자재명 : "+ result.data[0].name + "&nbsp||&nbsp" +
+                             "제조사 : "+ result.data[0].maker + "&nbsp||&nbsp" + 
+                             "수량 : " +result.data[0].size + "&nbsp||&nbsp" + 
+                             "날짜 : "+ result.data[0].date;
+                        }else {
+                            showResult.innerHTML = "검색하신 자재가 없습니다.";
+                        }
+                    }
+                    break;
+                case "delete_id":
+                    url = "/thing/"+li.getElementsByTagName("input")[0].value;
+                    method = "DELETE";
+                    fn = function(result) {
+                        if(result.result === 1) {
+                            showResult.innerHTML = result.data+ "삭제 성공";
+                        }else{
+                            showResult.innerText = "검색하신 자재가 없습니다.";
+                        }
+                    }
+                    break;
+                /*case "update_id":
+                    url = "/thing/"+li.getElementsByTagName("input")[0].value;;
+                    method = "put";
+                    let update = [].slice.call(document.querySelector("form").elements);
+                    update = update.reduce(function(pre,next) {
+                        pre[next.name] = next.value;
+                        return pre;
+                    }, {});
+                    fn = function (result) {
+                        if(result.result === 1) showResult.innerHTML = "자재 수정 성공.";
+                        else showResult.innerHTML = "수정할 자재 정보 오류";
+                    }
+                    break;*/
+                default:
+                    // statements_def
+                    console.log("default");
+                    break;
+            }
+            sendAjax(url, method, data, fn);
+        })
+
+        //@data : json format.
+        function sendAjax(url, method, data, fn){ 
+
+            const xhr = new XMLHttpRequest();
+            xhr.open(method, url);
+
+            if(data) {
+                data = JSON.stringify(data);
+                xhr.setRequestHeader('Content-Type', "application/json");
+            } else { 
+                data = null;
+            }
+
+            xhr.send(data);
+
+            xhr.addEventListener('load', function() {
+                const result = JSON.parse(xhr.responseText);
+                fn(result);
+            });
+        }
+    </script>
+
+    </body>
+</html>
